@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NEON BREAKER</title>
+<link rel="stylesheet" href="style.css">
+<script>
+/* Boot-error capture: registered before any game script so headless
+   boot checks can detect JS failures via the data-boot-errors attribute. */
+window.__nbErrors = [];
+(function () {
+  var box = null;
+  function note(msg) {
+    window.__nbErrors.push(String(msg).slice(0, 300));
+    box = box || document.getElementById('boot-errors');
+    if (box) {
+      box.setAttribute('data-boot-errors', String(window.__nbErrors.length));
+      box.textContent = 'ERRORS:' + window.__nbErrors.length + ':' +
+        window.__nbErrors.join(' | ').slice(0, 4000);
+    }
+  }
+  window.addEventListener('error', function (e) { note(e.message || e.error || 'error'); });
+  window.addEventListener('unhandledrejection', function (e) {
+    note('unhandledrejection: ' + (e.reason && e.reason.message || e.reason));
+  });
+})();
+</script>
+</head>
+<body>
+<div id="boot-errors" data-boot-errors="0" style="display:none">ERRORS:0</div>
+<div id="stage"><canvas id="game" width="1920" height="1080"></canvas></div>
+<script src="js/input.js"></script>
+<script src="js/sim.js"></script>
+<script src="js/themes.js"></script>
+<script src="js/renderer.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
